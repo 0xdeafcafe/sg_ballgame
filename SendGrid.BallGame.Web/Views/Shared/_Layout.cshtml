@@ -6,6 +6,48 @@
 	<title>@ViewBag.Title</title>
 	@Styles.Render("~/Content/css")
 	@Scripts.Render("~/bundles/modernizr")
+	
+	<style>
+		h1.big {
+			font-size: 70px;
+		}
+
+		#game-container {
+			 width: 801px; 
+			 height: 600px; 
+			 background: #eee; 
+			 margin: 20px auto;
+			 border-top: 1px solid #ddd;
+			 border-left: 1px solid #ddd;
+		 }	
+
+		.game-entity {
+			width:50px; 
+			height: 50px;
+			border-bottom: 1px solid #ddd;
+			border-right: 1px solid #ddd;
+			margin: 0;
+			padding: 0;
+			padding: 5px;
+		}
+
+		.game-entity.obstacle {
+			background: grey;
+			border: 0;
+		}
+
+		.game-entity.goal {
+			background: aqua;
+			border: 0;
+		}
+
+		.game-entity .ball {
+			background: orange;
+			border-radius: 25px;
+			width: 40px; 
+			height: 40px;
+		}
+	</style>
 </head>
 <body>
 	<div class="navbar navbar-inverse navbar-fixed-top">
@@ -21,6 +63,7 @@
 			<div class="navbar-collapse collapse">
 				<ul class="nav navbar-nav">
 					<li>@Html.ActionLink("Home", "Index", "Home")</li>
+					<li>@Html.ActionLink("Game", "Game", "Home")</li>
 				</ul>
 			</div>
 		</div>

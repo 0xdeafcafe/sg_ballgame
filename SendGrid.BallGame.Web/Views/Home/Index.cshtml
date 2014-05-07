@@ -13,12 +13,6 @@
 </div>
 
 <div class="row">
-	<div id="game-container" style="width: 800px; height: 500px; background: #eee; margin: 20px auto;">
-		
-	</div>
-</div>
-
-<div class="row">
 	<div class="col-md-4">
 		<h2>Getting started</h2>
 		<p>
@@ -40,34 +34,3 @@
 	</div>
 </div>
 
-@section scripts
-{
-	<script>
-		$(document).ready(function() {
-			setInterval(getCommands, 1000);
-		});
-
-		function getCommands() {
-			$.getJSON('/api/command', null, function (response) {
-				console.log(response);
-
-				var data = response.Data;
-				var items = [];
-				for (var i = 0; i < data.length; i++) {
-					switch(data[i].Command) {
-						case 0x0: items.unshift("up"); break;
-						case 0x1: items.unshift("down"); break;
-						case 0x2: items.unshift("left"); break;
-						case 0x3: items.unshift("right"); break;
-					}
-				}
-
-				// execute commands
-				console.log(items);
-
-				if (items.length > 0)
-					$('#game-container').html("<span>" + items + "</span>");
-			});
-		}
-	</script>
-}

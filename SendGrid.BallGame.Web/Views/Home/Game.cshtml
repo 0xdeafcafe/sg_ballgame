@@ -1,0 +1,205 @@
+﻿
+@{
+    ViewBag.Title = "Game";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+
+<h1 class="big">inbound@xerax.bymail.in</h1>
+
+<div class="row">
+	<div id="game-container">
+		
+	</div>
+</div>
+
+@section scripts
+{
+	<script>
+		var columnCount = 16;
+		var rowCount = 12;
+
+		var obstacleOffsets = [
+
+			// S obstacle
+			{ x: 4, y: 3 },
+			{ x: 4, y: 4 },
+			{ x: 5, y: 4 },
+			{ x: 6, y: 4 },
+			{ x: 7, y: 4 },
+			{ x: 8, y: 4 },
+			{ x: 8, y: 5 },
+
+			// Bar obstacle
+			{ x: 6, y: 0 },
+			{ x: 6, y: 1 },
+			{ x: 6, y: 2 },
+
+			// Snake obstacle
+			{ x: columnCount - 1, y: 6 },
+			{ x: columnCount - 2, y: 6 },
+			{ x: columnCount - 3, y: 6 },
+			{ x: columnCount - 3, y: 5 },
+			{ x: columnCount - 4, y: 5 },
+
+			// Final Assault obstacle
+			{ x: 5, y: rowCount - 1 },
+			{ x: 5, y: rowCount - 2 },
+			{ x: 5, y: rowCount - 3 },
+			{ x: 6, y: rowCount - 3 }
+		];
+
+		var goalOffset = { x: 0, y: rowCount - 1 };
+		var ballOffset = { x: columnCount - 1, y: 0 }
+
+		$(document).on("keydown", function(event) {
+			switch (event.which) {
+			case 38:
+				processCommand("up");
+				break;
+			case 40:
+				processCommand("down");
+				break;
+			case 37:
+				processCommand("left");
+				break;
+			case 39:
+				processCommand("right");
+				break;
+			}
+		});
+
+		$(document).ready(function() {
+			// Draw game container
+			draw();
+
+			// Start update function
+			setInterval(update, 1000);
+		});
+
+		function draw() {
+			// clear container
+			$("#game-container").html('');
+
+			for (var r = 0; r < rowCount; r++) {
+				// row
+				$("#game-container").append('<div class="row">');
+
+				for (var c = 0; c < columnCount; c++) {
+					// column
+					var entityContent = "";
+					var entityClass = "";
+
+					// check obstacles
+					for (var i = 0; i < obstacleOffsets.length; i++)
+						if (obstacleOffsets[i].x == c && obstacleOffsets[i].y == r)
+							entityClass = 'obstacle';
+
+					// check exit
+					if (goalOffset.x == c && goalOffset.y == r)
+						entityClass = 'goal';
+
+					// check ball position
+					if (ballOffset.x == c && ballOffset.y == r)
+						entityContent = '<div class="ball"></div>';
+
+					if (ballOffset.x == c && ballOffset.y == r &&
+						goalOffset.x == c && goalOffset.y == r) {
+						entityClass = 'goal';
+						entityContent = '<div class="ball"></div>';
+					}
+
+					$("#game-container").append(
+						'<div col="' + c + '" row="' + r + '" class="col-md-1 game-entity ' + entityClass + '">' + entityContent + '</div>');
+				}
+
+				$("#game-container").append('</div>');
+			}
+		}
+
+		function update() {
+			$.getJSON('/api/command', null, function(response) {
+				console.log(response);
+
+				var data = response.Data;
+				var items = [];
+				for (var i = 0; i < data.length; i++) {
+					switch (data[i].Command) {
+					case 0x0:
+						items.unshift("up");
+						break;
+					case 0x1:
+						items.unshift("down");
+						break;
+					case 0x2:
+						items.unshift("left");
+						break;
+					case 0x3:
+						items.unshift("right");
+						break;
+					}
+				}
+
+				if (items.length <= 0) return;
+
+				// execute commands
+				for (i = 0; i < items.length; i++)
+					processCommand(items[i]);
+			});
+		}
+
+		function processCommand(command) {
+			console.log(command);
+
+			// do game logic - move sprites, collision detection, winning detection
+			var newBallOffset = { x: ballOffset.x, y: ballOffset.y };
+
+			switch (command) {
+			case "up":
+				newBallOffset.y -= 1;
+				break;
+			case "down":
+				newBallOffset.y += 1;
+				break;
+			case "left":
+				newBallOffset.x -= 1;
+				break;
+			case "right":
+				newBallOffset.x += 1;
+				break;
+			}
+
+			var update = true;
+
+			// check collision of container
+			if (newBallOffset.x < 0 || newBallOffset.x >= columnCount ||
+				newBallOffset.y < 0 || newBallOffset.y >= rowCount)
+				update = false;
+
+			// check collision of obsticals
+			for (var i = 0; i < obstacleOffsets.length; i++)
+				if (newBallOffset.x == obstacleOffsets[i].x &&
+					newBallOffset.y == obstacleOffsets[i].y)
+					update = false;
+
+			// check collision of goal
+			if (newBallOffset.x == goalOffset.x &&
+				newBallOffset.y == goalOffset.y)
+				specialEvent("game-over");
+
+			// set new ball position
+			if (update)
+				ballOffset = newBallOffset;
+
+			// draw new container
+			draw();
+		}
+
+		function specialEvent(event) {
+			switch (event) {
+			case "game-over":
+
+				break;
+			}
+		}
+	</script>
+}

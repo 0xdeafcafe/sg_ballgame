@@ -8,5 +8,10 @@ namespace SendGrid.BallGame.Web.Controllers
 		{
 			return View();
 		}
+
+		public ActionResult Game()
+		{
+			return View();
+		}
 	}
 }
