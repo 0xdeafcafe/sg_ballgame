@@ -1,10 +1,9 @@
-﻿
-@{
+﻿@{
     ViewBag.Title = "Game";
     Layout = "~/Views/Shared/_Layout.cshtml";
 }
 
-<h1 class="big">inbound@xerax.bymail.in</h1>
+<h1 class="big">demo@alx.red</h1>
 
 <div class="row">
 	<div id="game-container">
@@ -19,7 +18,6 @@
 		var rowCount = 12;
 
 		var obstacleOffsets = [
-
 			// S obstacle
 			{ x: 4, y: 3 },
 			{ x: 4, y: 4 },
@@ -53,18 +51,18 @@
 
 		$(document).on("keydown", function(event) {
 			switch (event.which) {
-			case 38:
-				processCommand("up");
-				break;
-			case 40:
-				processCommand("down");
-				break;
-			case 37:
-				processCommand("left");
-				break;
-			case 39:
-				processCommand("right");
-				break;
+				case 38:
+					processCommand(0x00);
+					break;
+				case 40:
+					processCommand(0x01);
+					break;
+				case 37:
+					processCommand(0x02);
+					break;
+				case 39:
+					processCommand(0x03);
+					break;
 			}
 		});
 
@@ -122,22 +120,9 @@
 
 				var data = response.Data;
 				var items = [];
-				for (var i = 0; i < data.length; i++) {
-					switch (data[i].Command) {
-					case 0x0:
-						items.unshift("up");
-						break;
-					case 0x1:
-						items.unshift("down");
-						break;
-					case 0x2:
-						items.unshift("left");
-						break;
-					case 0x3:
-						items.unshift("right");
-						break;
-					}
-				}
+				for (var i = 0; i < data.length; i++)
+					if (data[i].Command >= 0x00 && data[i].Command <= 0x05)
+						items.unshift(data[i].Command);
 
 				if (items.length <= 0) return;
 
@@ -154,18 +139,18 @@
 			var newBallOffset = { x: ballOffset.x, y: ballOffset.y };
 
 			switch (command) {
-			case "up":
-				newBallOffset.y -= 1;
-				break;
-			case "down":
-				newBallOffset.y += 1;
-				break;
-			case "left":
-				newBallOffset.x -= 1;
-				break;
-			case "right":
-				newBallOffset.x += 1;
-				break;
+				case 0x00:
+					newBallOffset.y -= 1;
+					break;
+				case 0x01:
+					newBallOffset.y += 1;
+					break;
+				case 0x02:
+					newBallOffset.x -= 1;
+					break;
+				case 0x03:
+					newBallOffset.x += 1;
+					break;
 			}
 
 			var update = true;
@@ -196,9 +181,15 @@
 
 		function specialEvent(event) {
 			switch (event) {
-			case "game-over":
-
-				break;
+				case "game-over":
+					
+					break;
+				case "beebs":
+					
+					break;
+				case "cyrus":
+					
+					break;
 			}
 		}
 	</script>

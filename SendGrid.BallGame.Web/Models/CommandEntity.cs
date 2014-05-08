@@ -5,10 +5,12 @@ namespace SendGrid.BallGame.Web.Models
 {
 	public enum Command
 	{
-		Up,
-		Down,
-		Left,
-		Right
+		Up = 0x00,
+		Down = 0x01,
+		Left = 0x02,
+		Right = 0x03,
+		Bieber = 0x04,
+		Cyrus = 0x05
 	}
 
 	public class CommandEntity : TableEntity
