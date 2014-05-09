@@ -5,7 +5,6 @@ using System.Web.Http;
 using System.Web.Mvc;
 using SendGrid.BallGame.Web.Attributes.Filters;
 using SendGrid.BallGame.Web.Models;
-using SendGrid.BallGame.Web.Storage;
 
 namespace SendGrid.BallGame.Web.Controllers
 {
@@ -42,7 +41,11 @@ namespace SendGrid.BallGame.Web.Controllers
 			if (commandEntity != null)
 			{
 				Debug.WriteLine("[POST] api/inbound :: called :: valid email :: command added to db");
-				new AzureStorage().TableStorage.InsertOrReplaceSingleEntity(commandEntity);
+				using (var context = new Context())
+				{
+					context.Commands.Add(commandEntity);
+					context.SaveChanges();
+				}
 			}
 
 			end:

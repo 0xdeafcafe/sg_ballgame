@@ -1,5 +1,4 @@
-﻿using System;
-using Microsoft.WindowsAzure.Storage.Table;
+﻿using System.ComponentModel.DataAnnotations;
 
 namespace SendGrid.BallGame.Web.Models
 {
@@ -13,11 +12,8 @@ namespace SendGrid.BallGame.Web.Models
 		Cyrus = 0x05
 	}
 
-	public class CommandEntity : TableEntity
+	public class CommandEntity
 	{
-		public static string RowKeyString = "{0}";
-		public static string PartitionKeyString = "CommandEntities";
-
 		/// <summary>
 		/// yolo rite
 		/// </summary>
@@ -31,10 +27,13 @@ namespace SendGrid.BallGame.Web.Models
 		{
 			Command = command;
 			Used = false;
-
-			// Set our Partition and Row Keys
-			SetKeys();
 		}
+
+		/// <summary>
+		/// 
+		/// </summary>
+		[Key]
+		public int Id { get; set; }
 
 		/// <summary>
 		/// Indicates if the command has been used
@@ -53,15 +52,6 @@ namespace SendGrid.BallGame.Web.Models
 		{
 			get { return (Command)CommandFake; }
 			set { CommandFake = (int)value; }
-		}
-
-		/// <summary>
-		/// Set the entities keys
-		/// </summary>
-		private void SetKeys()
-		{
-			PartitionKey = PartitionKeyString;
-			RowKey = String.Format(RowKeyString, Guid.NewGuid());
 		}
 	}
 }

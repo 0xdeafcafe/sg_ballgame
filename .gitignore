@@ -74,3 +74,5 @@ packages/
 
 #Test files
 *.testsettings
+*.mdf
+*.ldf

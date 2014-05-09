@@ -3,9 +3,7 @@ using System.Diagnostics;
 using System.Linq;
 using System.Web.Http;
 using System.Web.Mvc;
-using Microsoft.WindowsAzure.Storage.Table;
 using SendGrid.BallGame.Web.Models;
-using SendGrid.BallGame.Web.Storage;
 
 namespace SendGrid.BallGame.Web.Controllers
 {
@@ -14,27 +12,20 @@ namespace SendGrid.BallGame.Web.Controllers
 		// GET api/command
 		public ActionResult Get()
 		{
-			var storage = new AzureStorage();
+			var context = new Context();
 
 			// Get un-expired commands, set them as expired, return JSON list
-			var commands = storage.TableStorage.RetrieveMultipleEntities<CommandEntity>(CommandEntity.PartitionKeyString,
-				TableQuery.GenerateFilterConditionForBool("Used", QueryComparisons.Equal, false));
-
-			var commandEntities = commands as CommandEntity[] ?? commands.ToArray();
-			if (!commandEntities.Any()) return new JsonResult { Data = new List<CommandEntity>() };
+			var commands = context.Commands.Where(c => !c.Used).ToList();
+			if (!commands.Any()) return new JsonResult { Data = new List<CommandEntity>() };
 
 			Debug.WriteLine("[GET] api/command :: called :: has pending commands");
 
 			// Set the commands as used in the 
-			foreach (var command in commandEntities)
-			{
-				var newCommand = command;
-				newCommand.Used = true;
-				storage.TableStorage.InsertOrReplaceSingleEntity(newCommand);
-			}
+			foreach (var command in commands)
+				command.Used = true;
+			context.SaveChanges();
 
-			Debug.WriteLine("[GET] api/command :: called :: has pending commands :: {0} commands returned to client", commandEntities.Count());
-
+			Debug.WriteLine("[GET] api/command :: called :: has pending commands :: {0} commands returned to client", commands.Count());
 			return new JsonResult { Data = commands };
 		}
 	}
