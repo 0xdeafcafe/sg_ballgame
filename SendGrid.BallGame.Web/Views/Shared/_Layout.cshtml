@@ -13,13 +13,37 @@
 		}
 
 		#game-container {
-			 width: 801px; 
-			 height: 600px; 
-			 background: #eee; 
-			 margin: 20px auto;
-			 border-top: 1px solid #ddd;
-			 border-left: 1px solid #ddd;
-		 }	
+			width: 801px; 
+			height: 600px; 
+			background: #eee; 
+			margin: 20px auto;
+			border-top: 1px solid #ddd;
+			border-left: 1px solid #ddd;
+		}
+
+		#game-over-screen {
+			display: none;
+			position: fixed;
+			top: 0;
+			bottom: 0;
+			left: 0;
+			right: 0;
+			background-color: #ffffff;
+			background-color: rgba(255, 255, 255, 0.8);
+		}
+
+		.center-message {
+			margin: auto;
+			position: fixed;
+			left:0; right:0;
+			top:0; bottom:0;
+			width: 700px;
+			height: 200px;
+			text-align: center;	
+		}
+		.center-message > h1 {
+			font-size: 120px;
+		}
 
 		.game-entity {
 			width:50px; 
